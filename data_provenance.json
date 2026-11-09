@@ -1,0 +1,8 @@
+{
+  "downloaded_file": "lalonde.csv",
+  "sha256": "0e07558a87643b1a44bd3fc1d634890f0e9175e9c2bc02d7aeed5139ad771557",
+  "bytes": 26824,
+  "retrieved_utc": "2026-11-09",
+  "source_url": "https://raw.githubusercontent.com/robjellis/lalonde/master/lalonde_data.csv",
+  "note": "Public mirror; checksum identifies reviewed bytes. Dataset rights remain with upstream sources."
+}

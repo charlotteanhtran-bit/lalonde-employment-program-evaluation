@@ -1,0 +1,108 @@
+{
+  "n": 614,
+  "n_treatment": 185,
+  "n_control": 429,
+  "missing_rows_removed": 0,
+  "treatment_mean_1978_earnings": 6349.143530270271,
+  "control_mean_1978_earnings": 6984.169742307692,
+  "unadjusted_mean_difference": -635.0262120374209,
+  "welch_95pct_ci": [
+    -1967.2444050609754,
+    697.1919809861336
+  ],
+  "welch_t_statistic": -0.9377296979393183,
+  "welch_p_value": 0.3490766555566697,
+  "adjusted_ols_treatment_association": 1548.243801999344,
+  "adjusted_ols_robust_se_HC2": 742.1816773146069,
+  "adjusted_ols_p_value": 0.03697217650212857,
+  "adjusted_ols_95pct_ci": [
+    93.59444447718647,
+    3002.8931595215017
+  ],
+  "currency_units": "1978 US dollars (as recorded in source data)",
+  "causal_interpretation": "Associational comparison: PSID units are not randomized NSW controls.",
+  "diagnostics": {
+    "baseline_balance": [
+      {
+        "variable": "age",
+        "treated_mean": 25.816216216216215,
+        "comparison_mean": 28.03030303030303,
+        "standardized_mean_difference": -0.24190362292609974
+      },
+      {
+        "variable": "educ",
+        "treated_mean": 10.345945945945946,
+        "comparison_mean": 10.235431235431236,
+        "standardized_mean_difference": 0.04475508511087087
+      },
+      {
+        "variable": "black",
+        "treated_mean": 0.8432432432432433,
+        "comparison_mean": 0.20279720279720279,
+        "standardized_mean_difference": 1.6677188107185172
+      },
+      {
+        "variable": "hispan",
+        "treated_mean": 0.05945945945945946,
+        "comparison_mean": 0.14219114219114218,
+        "standardized_mean_difference": -0.2769395965062943
+      },
+      {
+        "variable": "married",
+        "treated_mean": 0.1891891891891892,
+        "comparison_mean": 0.5128205128205128,
+        "standardized_mean_difference": -0.7194919624729043
+      },
+      {
+        "variable": "nodegree",
+        "treated_mean": 0.7081081081081081,
+        "comparison_mean": 0.5967365967365967,
+        "standardized_mean_difference": 0.23504820466514967
+      },
+      {
+        "variable": "re75",
+        "treated_mean": 1532.0553137837837,
+        "comparison_mean": 2466.484443123543,
+        "standardized_mean_difference": -0.2870021087425329
+      },
+      {
+        "variable": "re74",
+        "treated_mean": 2095.573688648649,
+        "comparison_mean": 5619.2365063869465,
+        "standardized_mean_difference": -0.5957515910049503
+      }
+    ],
+    "specifications": [
+      {
+        "specification": "Unadjusted OLS",
+        "estimate": -635.0262120374316,
+        "ci_low": -1962.3047525031327,
+        "ci_high": 692.2523284282695,
+        "n": 614
+      },
+      {
+        "specification": "Baseline adjusted",
+        "estimate": 1548.243801999344,
+        "ci_low": 93.59444447718647,
+        "ci_high": 3002.8931595215017,
+        "n": 614
+      },
+      {
+        "specification": "Nonlinear baseline",
+        "estimate": 993.0483034329357,
+        "ci_low": -376.15830137625153,
+        "ci_high": 2362.254908242123,
+        "n": 614
+      },
+      {
+        "specification": "Influence sensitivity (Cook > 4/n excluded)",
+        "estimate": 1268.8011486372825,
+        "ci_low": 68.14676879913236,
+        "ci_high": 2469.4555284754324,
+        "n": 577
+      }
+    ],
+    "influential_rows_above_4_over_n": 37,
+    "interpretation": "Sensitivity analyses are not causal identification. Excluding influential observations is a diagnostic, not a preferred estimate."
+  }
+}
