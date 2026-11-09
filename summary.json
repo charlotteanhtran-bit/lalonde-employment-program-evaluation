@@ -1,0 +1,18 @@
+{
+  "n": 614,
+  "n_treatment": 185,
+  "n_control": 429,
+  "missing_rows_removed": 0,
+  "treatment_mean_1978_earnings": 6349.143530270271,
+  "control_mean_1978_earnings": 6984.169742307692,
+  "unadjusted_mean_difference": -635.0262120374209,
+  "welch_95pct_ci": [-1967.2444050609754, 697.1919809861336],
+  "welch_t_statistic": -0.9377296979393183,
+  "welch_p_value": 0.3490766555566697,
+  "adjusted_ols_treatment_effect": 1548.2438019997824,
+  "adjusted_ols_robust_se_HC2": 742.1816773148071,
+  "adjusted_ols_p_value": 0.036972176502126045,
+  "adjusted_ols_95pct_ci": [93.5944444772324, 3002.893159522332],
+  "currency_units": "1978 US dollars (as recorded in source data)",
+  "causal_interpretation": "Associational comparison: PSID units are not randomized NSW controls."
+}
