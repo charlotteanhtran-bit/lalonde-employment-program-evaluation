@@ -53,4 +53,4 @@ The unadjusted chart interval uses HC2 OLS; the summary's Welch interval uses We
 - `python -m unittest discover -s tests -v` checks missing groups, invalid input, and complete-case consistency. GitHub Actions runs tests and the full analysis.
 - `reports/` contains checked-in results and charts. Regenerate with `python analyze.py`; review and copy outputs into `reports/` when intentionally updating published results. The root `summary.json` is retained as a compatibility snapshot.
 
-This project evaluates associations in an employment-program comparison; it is not a randomized applicant A/B test. The existing repository URL is preserved to avoid breaking portfolio links.
+This project evaluates associations in an employment-program comparison; it is not a randomized applicant A/B test.
