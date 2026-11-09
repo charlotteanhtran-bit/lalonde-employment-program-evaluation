@@ -1,4 +1,4 @@
-"""Reproducible analysis of the MatchIt LaLonde employment-program comparison."""
+"""Compare NSW and PSID earnings in the LaLonde data."""
 from __future__ import annotations
 
 import argparse
@@ -43,7 +43,7 @@ def load_data(path: Path | None) -> pd.DataFrame:
     missing = required - set(data.columns)
     if missing:
         raise ValueError(f"Dataset missing required columns: {sorted(missing)}")
-    # MatchIt pairs NSW-treated units with PSID comparison units.
+    # Validate numeric fields before calculating group comparisons.
     for col in required:
         data[col] = pd.to_numeric(data[col], errors="raise")
     if np.isinf(data[list(required)].to_numpy(dtype=float)).any():
@@ -90,7 +90,7 @@ def analyze(data: pd.DataFrame) -> dict:
     }
 
 def diagnostics(data: pd.DataFrame) -> dict:
-    """Describe imbalance, specification sensitivity and influential observations."""
+    """Check baseline differences and how the estimate changes across models."""
     sample = analysis_sample(data)
     baseline = []
     for col in BASELINE:

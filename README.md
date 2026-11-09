@@ -1,56 +1,80 @@
 # Employment Program Evaluation — LaLonde
 
-An observational analysis of historical employment-program participation and earnings, inspired by WQU DS 07 skills. It uses public data and original code; it does not reproduce WQU's private applicant dataset or notebook.
+How much does the choice of comparison change the result of an employment-program evaluation? This project uses historical earnings data to compare National Supported Work (NSW) participants with a group from the Panel Study of Income Dynamics (PSID).
 
-## Research question
+The main finding is that the answer changes with the model. Participants earned less in the raw comparison, but the difference turns positive after adjusting for their starting circumstances. Adding nonlinear terms weakens that result.
 
-How did 1978 earnings differ between participants in the National Supported Work (NSW) program and a PSID comparison group?
+## Results
 
-## Data
+The sample contains 614 people: 185 NSW participants and 429 PSID comparison observations. Earnings are measured in 1978 US dollars.
 
-The LaLonde dataset from the R MatchIt package includes NSW program participants and PSID comparison units. The PSID group was not randomized, so these results are adjusted comparisons, not causal estimates.
+| Comparison | Earnings difference: NSW minus PSID | 95% interval |
+| --- | ---: | ---: |
+| Raw group means | −$635 | See the Welch interval in [summary.json](reports/summary.json) |
+| OLS with baseline controls | +$1,548 | $94 to $3,003 |
+| OLS with additional squared terms | +$993 | −$376 to $2,362 |
 
-Outcome: re78 (1978 earnings). Group indicator: treat (1=NSW participant, 0=PSID comparison). Baseline variables are used for descriptive summaries and regression adjustment.
+The raw difference has a Welch p-value of 0.349. For the baseline-adjusted model, the HC2 robust p-value is 0.037.
 
-The script downloads the CSV from a public GitHub mirror when needed. A local CSV can be passed with --data.
+The sign change matters because these groups were different before the program. Mean 1974 earnings were about $2,096 for NSW participants and $5,619 for the PSID group. The standardized mean difference for the dataset's Black indicator was 1.668. Regression adjusts for the recorded differences, but it cannot account for everything that may have affected participation and later earnings.
 
-## Reproduce
+![Earnings differences across regression specifications](reports/specification_sensitivity.png)
 
-    python -m venv .venv
-    source .venv/bin/activate  # Windows: .venv\Scripts\activate
-    pip install -r requirements-lock.txt
-    python analyze.py
+The model with squared terms has an interval that includes zero. That makes the positive adjusted result less convincing as a general conclusion: it depends on how the baseline variables enter the regression.
 
-The script writes a JSON summary and earnings plot to outputs/. The current run produced an unadjusted difference of -$635 (Welch p=0.349) and baseline-adjusted OLS estimate of +$1,548 (HC2 robust p=0.037). Earnings are skewed, and the adjusted result should not be interpreted causally because the PSID comparison group was not randomized.
+## How the analysis works
 
-## Interpretation limits
+The script first checks the data and keeps rows with complete values for earnings, group membership, and the baseline controls. The main comparisons use that same sample.
 
-This is a historical employment-program evaluation, not university admissions data. Differences may reflect selection and unmeasured confounding. Results should not be generalized automatically to current programs. Statistical significance is not practical importance; no causal subgroup claims are made.
+It then runs a Welch test for the difference in mean earnings and fits OLS with HC2 robust standard errors. Controls include age, education, the source's race indicators, marital status, degree status, and earnings in 1974 and 1975.
 
-## Data provenance
+Two checks put the regression result in context:
 
-- LaLonde (1986), “Evaluating the Econometric Evaluations of Training Programs with Experimental Data,” American Economic Review, 76(4), 604–620.
-- Dataset: MatchIt package, lalonde, distributed via https://raw.githubusercontent.com/robjellis/lalonde/master/lalonde_data.csv
+- **Starting differences:** group means, standardized mean differences, and distribution plots show how much the groups overlap.
+- **Model sensitivity:** adding squared age, education, and prior earnings terms tests whether a more flexible adjustment changes the estimate. A separate fit excludes 37 observations with Cook's distance above `4/n` to check their influence; it is not the main estimate.
 
-Please preserve upstream attribution if redistributing the CSV.
+![Age, education, and prior earnings in the two groups](reports/baseline_overlap.png)
 
-## Findings and robustness
+The sensitivity chart uses HC2 OLS intervals throughout. The raw comparison in the JSON also reports a Welch interval, whose endpoints differ slightly because it uses Welch's t degrees of freedom.
 
-- The 614-person sample includes 185 NSW participants and 429 PSID comparison observations. The raw earnings difference is −$635; baseline adjustment changes it to +$1,548 (95% HC2 interval: $94 to $3,003).
-- The groups start substantially different: mean 1974 earnings are $2,096 versus $5,619, and the standardized difference in the source's Black indicator is 1.668. These imbalances help explain why adjustment changes the comparison; they do not prove that adjustment eliminates confounding.
-- Adding quadratic baseline terms reduces the estimate to +$993 (95% interval: −$376 to $2,362). The conclusion is specification-sensitive. A separate influence diagnostic excludes 37 rows above Cook's distance 4/n; it is not the preferred analysis.
+## What this can tell us
 
-![Specification sensitivity](reports/specification_sensitivity.png)
+The PSID comparison group was not randomly assigned alongside the NSW participants. These estimates describe earnings differences under different adjustments; they do not establish how much the program caused earnings to change. Unmeasured differences between the groups remain a concern.
 
-![Baseline covariate overlap](reports/baseline_overlap.png)
+This is also a historical sample. It does not directly answer whether a similar program would work today.
 
-The unadjusted chart interval uses HC2 OLS; the summary's Welch interval uses Welch's t degrees of freedom, so their endpoints differ slightly. Every main plot and model uses the same complete-case sample. The influence sensitivity intentionally uses a smaller sample.
+## Run it
 
-## Engineering and verification
+Use Python 3.12. The pinned dependencies are in `requirements-lock.txt`; `requirements.txt` lists the direct dependencies.
 
-- `data_provenance.json` records the downloaded mirror's SHA-256, size, source, and retrieval date. Cached and new downloads must match; custom `--data` files instead undergo schema/value validation.
-- `requirements-lock.txt` records the tested Python 3.12 Linux dependency environment. `requirements.txt` lists direct minimum versions.
-- `python -m unittest discover -s tests -v` checks missing groups, invalid input, and complete-case consistency. GitHub Actions runs tests and the full analysis.
-- `reports/` contains checked-in results and charts. Regenerate with `python analyze.py`; review and copy outputs into `reports/` when intentionally updating published results. The root `summary.json` is retained as a compatibility snapshot.
+```bash
+python -m venv .venv
+source .venv/bin/activate
+# On Windows: .venv\Scripts\activate
+pip install -r requirements-lock.txt
+python analyze.py
+```
 
-This project evaluates associations in an employment-program comparison; it is not a randomized applicant A/B test.
+The first run downloads the CSV into `data/`. To use a local file with the required columns:
+
+```bash
+python analyze.py --data path/to/lalonde.csv
+```
+
+New results go into `outputs/`: a JSON summary, baseline-balance and sensitivity tables, and three charts. The published results are in [reports/](reports/); they are not overwritten automatically. The root `summary.json` is a copy retained from the earlier project layout.
+
+Run the input and sample-consistency checks with:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+GitHub Actions is configured to run those tests and the analysis. The downloader checks its source file against the SHA-256 recorded in `data_provenance.json`, so a changed upstream file requires review. Custom CSVs receive column and value checks instead.
+
+## Data and background
+
+This project applies statistical-analysis skills from WQU DS 07 to a public employment-program dataset. It does not include the course's private applicant data or notebook.
+
+- LaLonde, R. J. (1986). “Evaluating the Econometric Evaluations of Training Programs with Experimental Data.” *American Economic Review*, 76(4), 604–620.
+- The LaLonde comparison dataset is also distributed with R's MatchIt package. This script uses the [public CSV mirror](https://raw.githubusercontent.com/robjellis/lalonde/master/lalonde_data.csv).
+- Source details and the checksum are recorded in [data_provenance.json](data_provenance.json). Keep the source attribution when reusing the data.
